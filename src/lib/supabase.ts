@@ -10,7 +10,7 @@ import { createClient } from "@supabase/supabase-js";
  * Präfix vor der Filial-ID, z. B. "test-" => Zeilen "test-kenzo" und
  * "test-asiawok". Nur zum lokalen Arbeiten gegen Testzeilen – in Produktion leer.
  */
-export const STORE_ID_PREFIX: string = import.meta.env.VITE_STORE_ID_PREFIX || "";
+export const STORE_ID_PREFIX: string = import.meta.env.DEV ? "dev-" : (import.meta.env.VITE_STORE_ID_PREFIX || "");
 
 // Beide Schreibweisen akzeptieren: VITE_* (selbst gesetzt) und NEXT_PUBLIC_*
 // (so legt die Vercel-Supabase-Integration die öffentlichen Schlüssel an).
@@ -25,3 +25,4 @@ export const supabase = url && anonKey ? createClient(url, anonKey) : null;
 
 /** true = Zugangsdaten vorhanden. Fehlen sie, läuft die App nur lokal weiter. */
 export const isRemoteConfigured = supabase !== null;
+

@@ -25,3 +25,8 @@ Mật khẩu ban đầu: `1991`. Lưu cục bộ namespace `bao-app`; muốn đ�
 - Chưa có định mức nhân sự: tối thiểu một người mỗi khung mở. Cảnh báo thiếu giờ cần xem khi tạo lịch.
 
 Các bài kiểm thử chung kế thừa dùng dữ liệu fixture riêng; restaurant.test.ts kiểm tra dữ liệu Bảo.
+
+## Môi trường
+
+Local Vite luôn dùng store_id dev-bao. Production mặc định bao. Hai hàng tách trong cùng Supabase stundenzettel; không phải database dev độc lập. .env.local kéo từ Vercel Development, không commit.
+
