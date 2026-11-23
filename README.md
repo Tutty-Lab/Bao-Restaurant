@@ -18,7 +18,7 @@ Mật khẩu ban đầu: `1991`. Lưu cục bộ namespace `bao-app`; muốn đ�
 - Nguyễn Hữu Hoá: Minijob bếp thứ 7, từ 13/11; tạm sang từ Khang tháng này. Hai Betrieb riêng. Không liên kết lịch Khang trong repo này.
 - Mạnh Tuấn Tú: Minijob phụ bồi tối, từ 10/11; tạm giới hạn ca 17:00–22:00.
 - Thị Khánh Duong: Minijob phụ bồi, từ 10/11. Giữ tên theo ảnh.
-- Ba Minijob chưa có giờ/lương: mục tiêu 0 chờ nhập, không đoán số giờ.
+- Ba Minijob: 603 €/tháng, 13,90 €/giờ, mục tiêu 43 giờ/tháng theo chủ quán. Phép chia chính xác khoảng 43,38 giờ; dùng 43 giờ đã chốt. Tháng vào làm tính tỷ lệ theo ngày bắt đầu.
 - Thứ 2–6: 11:30–15:00 / 17:00–22:00. Thứ 7/CN/lễ: 16:00–22:00.
 - Năm tạm 2026. Địa chỉ trống; lịch lễ München kế thừa tạm, cần xác nhận địa phương.
 - Hợp đồng tuần ưu tiên 48/40h; lương tháng chỉ ghi nhận. Không tạo chấm công thực tế từ ảnh.
@@ -29,4 +29,5 @@ Các bài kiểm thử chung kế thừa dùng dữ liệu fixture riêng; resta
 ## Môi trường
 
 Local Vite luôn dùng store_id dev-bao. Production mặc định bao. Hai hàng tách trong cùng Supabase stundenzettel; không phải database dev độc lập. .env.local kéo từ Vercel Development, không commit.
+
 

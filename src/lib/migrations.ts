@@ -144,6 +144,13 @@ export function applyMigrations(storeId: string, schedule: Schedule): Schedule {
   if (!done().includes(MIGRATION_VAN_SATURDAY_OFF)) {
     next = { ...next, employees: vanSaturdayOff(storeId, next.employees), migrations: [...done(), MIGRATION_VAN_SATURDAY_OFF] };
   }
+  if (storeId === "bao" && !done().includes("2026-11-bao-minijob-603")) {
+    const ids = new Set(["bao-hoa", "bao-tu", "bao-duong"]);
+    next = { ...next, employees: next.employees.map(e => ids.has(e.id)
+      ? { ...e, monthlySalary: 603, hourlyRate: 13.9, targetMinutes: 43 * 60, weeklyHours: undefined }
+      : e), migrations: [...done(), "2026-11-bao-minijob-603"] };
+  }
   return next;
 }
+
 

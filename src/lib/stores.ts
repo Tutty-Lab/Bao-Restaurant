@@ -35,7 +35,7 @@ export const STORES: StoreConfig[] = [{
   },
   dayWeights: { monday: 1, tuesday: 1, wednesday: 1, thursday: 1, friday: 1, saturday: 1, sunday: 1 },
   staffingRules: [{ label: "Trong giờ mở cửa", when: "suốt mỗi khung mở", minStaff: 1, maxStaff: Infinity, scaled: false, windows: blocks => blocks }],
-  notes: "11:30–15:00 / 17:00–22:00. Thứ 7, CN, ngày lễ: 16:00–22:00. Hữu Hoá phụ bếp thứ 7, tạm thời tháng 11. Chưa có giờ/lương Minijob, địa chỉ, định mức nhân sự. Năm 2026 và lịch lễ München tạm theo dự án gốc; cần xác nhận.",
+  notes: "11:30–15:00 / 17:00–22:00. Thứ 7, CN, ngày lễ: 16:00–22:00. Hữu Hoá phụ bếp thứ 7, tạm thời tháng 11. Minijob 603 €/tháng, 13,90 €/giờ, mục tiêu 43 giờ/tháng. Chưa có địa chỉ, định mức nhân sự. Năm 2026 và lịch lễ München tạm theo dự án gốc; cần xác nhận.",
 }];
 export const DEFAULT_STORE_ID = STORES[0].id;
 
@@ -101,4 +101,5 @@ export function initialScheduleFor(store: StoreConfig): Schedule {
     shifts: [],
   };
 }
+
 
