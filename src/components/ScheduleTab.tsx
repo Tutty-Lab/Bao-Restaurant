@@ -240,7 +240,7 @@ export function ScheduleTab({
         />
       )}
 
-      {mode === "schedule" && <p className="mb-3 rounded bg-sky-50 px-3 py-2 text-sm text-sky-900">Chủ tiệm hỗ trợ theo giờ mở cửa (giả định như quán tham khảo). Dòng debug không cộng vào số nhân viên, giờ hợp đồng hoặc chấm công.</p>}
+      {mode === "schedule" && <p className="mb-3 rounded bg-sky-50 px-3 py-2 text-sm text-sky-900">Debug: số nhân viên ít nhất có mặt, đã trừ nghỉ. “Chủ” = không có nhân viên, dự kiến chủ hỗ trợ; mỗi lúc chỉ một vị trí Bếp hoặc Bồi. Rê chuột xem chi tiết. Giờ chủ không tính hợp đồng/chấm công.</p>}
       {mode === "schedule" && schedule.shifts.length > 0 && <StaffingReport analysis={store.analysis} />}
 
       {/* Lỗi kiểm tra */}
@@ -412,20 +412,10 @@ export function ScheduleTab({
                   peaks={(d) => peaksByDay.get(d)?.byLabel.get(rule.label)}
                 />
               ))}
-              <SummaryRow
-                label="Chủ (giả định)"
-                hint="chưa tính độ phủ"
-                labelClass="text-violet-700"
-                dates={gridDates}
-                value={(d) => {
-                  const day = resolveDay(schedule.workHours, d, publicHolidays(schedule.year), Object.fromEntries(schedule.dateOverrides.map(o => [o.date, o])));
-                  return day.closed ? "–" : day.blocks.map(b => `${minutesToTime(b.startMinutes)}–${minutesToTime(b.endMinutes)}`).join(" / ");
-                }}
-              />
               {schedule.shifts.length > 0 && GROUP_WINDOWS.map((w) => (
                 <GroupWindowRow
                   key={w.key}
-                  label={`${w.group === "KITCHEN" ? "Bếp" : "PV"} ${w.range}`}
+                  label={`${w.group === "KITCHEN" ? "Bếp" : "Bồi"} ${w.range}`}
                   title={`${w.group === "KITCHEN" ? "Bếp" : "Phục vụ"} ít nhất có mặt, ${w.title}`}
                   labelClass={w.group === "KITCHEN" ? "text-orange-700" : "text-sky-700"}
                   dates={gridDates}
@@ -540,12 +530,11 @@ function CoverageRow({
           <td
             key={d}
             className={`border-t border-l border-slate-200 px-1 py-1 text-center ${
-              short ? "bg-rose-50 font-semibold text-rose-700 outline outline-2 -outline-offset-2 outline-rose-500" : ""
+              short ? "bg-yellow-50 font-semibold text-yellow-700" : ""
             }`}
-            title={`ít nhất ${min}, đông nhất ${max} · luật: ${need}${Number.isFinite(allowed) ? `–${allowed}` : "+"} người`}
+            title={`ít nhất ${min}, đông nhất ${max} nhân viên · cần ${need}${Number.isFinite(allowed) ? `–${allowed}` : "+"} người${short ? " · thiếu nhân viên, dự kiến chủ hỗ trợ" : " · đủ người"}`}
           >
-            {min === max ? min : `${min}–${max}`}
-            {short && <span className="block text-[10px] leading-none">cần {need}</span>}
+            {min === 0 ? "Chủ" : `${min}${short ? " + Chủ" : ""}`}
           </td>
         );
       })}
@@ -591,10 +580,10 @@ function GroupWindowRow({
       </td>
       {dates.map((d) => {
         const n = value(d);
-        const tone = n == null ? "text-slate-300" : n === 0 ? "bg-rose-50 text-rose-700 font-semibold" : n === 1 ? "bg-amber-50 text-amber-800" : "";
+        const tone = n == null ? "text-slate-300" : n === 0 ? "bg-yellow-50 text-yellow-700 font-semibold" : "";
         return (
-          <td key={d} className={`border-t border-l border-slate-200 px-1 py-1 text-center ${tone}`}>
-            {n ?? "–"}
+          <td key={d} title={n == null ? "Đóng cửa / ngoài khung giờ" : n === 0 ? "Không có nhân viên trong một phần khung giờ; dự kiến chủ hỗ trợ, chưa xác nhận vị trí. Chủ chỉ hỗ trợ một vị trí mỗi lúc." : `${n} nhân viên ít nhất có mặt, đã trừ giờ nghỉ.`} className={`border-t border-l border-slate-200 px-1 py-1 text-center ${tone}`}>
+            {n == null ? "–" : n === 0 ? "Chủ" : n}
           </td>
         );
       })}
@@ -603,5 +592,3 @@ function GroupWindowRow({
     </tr>
   );
 }
-
-
