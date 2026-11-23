@@ -9,6 +9,13 @@ import { mayWorkOn } from "../availability";
 for (const month of [11, 12]) it(`keeps monthly Minijobs at 43h and reports actual Saturday capacity in month ${month}`, () => {
   const c = STORES[0], s = { ...initialScheduleFor(c), month };
   const shifts = generateSchedule({ ...s, rules: c.staffingRules, weights: c.dayWeights, storeTag: c.id });
+  // Whole-store deficit must stay visible, including infeasible weekly contracts.
+  const summary = s.employees.map(e => ({
+    target: monthlyTargetMinutesFor(e, datesOfMonth(2026, month), s.workHours),
+    assigned: shifts.filter(x => x.employeeId === e.id).reduce((n, x) => n + x.paidMinutes, 0),
+  }));
+  expect(summary.map(x => x.target - x.assigned)).toEqual(month === 11 ? [400, 9, 1500, 0, 0] : [732, 15, 1140, 0, 0]);
+  expect(summary.reduce((n, x) => n + x.target - x.assigned, 0)).toBe(month === 11 ? 1909 : 1887);
   for (const e of s.employees.filter(e => e.employmentType === "MINIJOB")) {
     expect(monthlyTargetMinutesFor(e, datesOfMonth(2026, month), s.workHours)).toBe(2580);
     const own = shifts.filter(x => x.employeeId === e.id);
@@ -35,3 +42,4 @@ it("migrates the old rigid evening shift without changing stored shifts", () => 
   expect(updated.employees[3].earliestWorkMinutes).toBe(960);
   expect(updated.shifts).toBe(s.shifts);
 });
+
