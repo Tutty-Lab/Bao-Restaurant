@@ -10,7 +10,7 @@ import {
 import { minutesToShortHours, minutesToTime } from "../lib/time";
 import { signedHours } from "../lib/dateFormat";
 import { isDayClosed, resolveDay } from "../lib/workHours";
-import { workingAt } from "../lib/staffing";
+import { minimumStaffIn } from "../lib/debugCoverage";
 import { publicHolidays } from "../lib/holidays";
 import { ShiftCellEditor } from "./ShiftCellEditor";
 import { ScheduleDayView } from "./ScheduleDayView";
@@ -165,13 +165,8 @@ export function ScheduleTab({
       const day = resolveDay(schedule.workHours, d, holidays, ovMap);
       if (day.closed) continue;
       for (const w of GROUP_WINDOWS) {
-        let min: number | null = null;
-        for (const block of day.blocks) {
-          for (let t = Math.max(w.from, block.startMinutes); t + 30 <= Math.min(w.to, block.endMinutes); t += 30) {
-            const count = dayShifts.filter((s) => groupById.get(s.employeeId) === w.group && workingAt(s, t)).length;
-            min = min == null ? count : Math.min(min, count);
-          }
-        }
+        const eligible = dayShifts.filter(s => groupById.get(s.employeeId) === w.group);
+        const min = minimumStaffIn(eligible, day.blocks, w.from, w.to);
         windows.set(w.key, min);
       }
     }
@@ -418,8 +413,8 @@ export function ScheduleTab({
                 />
               ))}
               <SummaryRow
-                label="Chủ tiệm"
-                hint="hỗ trợ"
+                label="Chủ (giả định)"
+                hint="chưa tính độ phủ"
                 labelClass="text-violet-700"
                 dates={gridDates}
                 value={(d) => {
@@ -560,8 +555,7 @@ function CoverageRow({
   );
 }
 
-// Khung giờ cho các dòng „ít nhất" Bếp/Phục vụ – theo giờ làm Khang & Ngon
-// (11–15, 16:30–22, gồm 30 phút chuẩn bị; đông 13–15 và 18–21). Nhãn ngắn, đầy đủ ở tooltip.
+// Khung debug Bảo; chỉ tính phần giao với giờ mở cửa thực tế.
 const GROUP_RANGES = [
   ["noon-open", "11½–13", "11:30 – 13:00", 11 * 60 + 30, 13 * 60],
   ["noon", "13–15", "13:00 – 15:00 (giờ đông)", 13 * 60, 15 * 60],
@@ -609,4 +603,5 @@ function GroupWindowRow({
     </tr>
   );
 }
+
 
