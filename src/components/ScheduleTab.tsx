@@ -245,6 +245,7 @@ export function ScheduleTab({
         />
       )}
 
+      {mode === "schedule" && <p className="mb-3 rounded bg-sky-50 px-3 py-2 text-sm text-sky-900">Chủ tiệm hỗ trợ theo giờ mở cửa (giả định như quán tham khảo). Dòng debug không cộng vào số nhân viên, giờ hợp đồng hoặc chấm công.</p>}
       {mode === "schedule" && schedule.shifts.length > 0 && <StaffingReport analysis={store.analysis} />}
 
       {/* Lỗi kiểm tra */}
@@ -416,6 +417,16 @@ export function ScheduleTab({
                   peaks={(d) => peaksByDay.get(d)?.byLabel.get(rule.label)}
                 />
               ))}
+              <SummaryRow
+                label="Chủ tiệm"
+                hint="hỗ trợ"
+                labelClass="text-violet-700"
+                dates={gridDates}
+                value={(d) => {
+                  const day = resolveDay(schedule.workHours, d, publicHolidays(schedule.year), Object.fromEntries(schedule.dateOverrides.map(o => [o.date, o])));
+                  return day.closed ? "–" : day.blocks.map(b => `${minutesToTime(b.startMinutes)}–${minutesToTime(b.endMinutes)}`).join(" / ");
+                }}
+              />
               {schedule.shifts.length > 0 && GROUP_WINDOWS.map((w) => (
                 <GroupWindowRow
                   key={w.key}
@@ -552,9 +563,9 @@ function CoverageRow({
 // Khung giờ cho các dòng „ít nhất" Bếp/Phục vụ – theo giờ làm Khang & Ngon
 // (11–15, 16:30–22, gồm 30 phút chuẩn bị; đông 13–15 và 18–21). Nhãn ngắn, đầy đủ ở tooltip.
 const GROUP_RANGES = [
-  ["noon-open", "11–13", "11:00 – 13:00 (chuẩn bị 11:00, khách từ 11:30)", 11 * 60, 13 * 60],
+  ["noon-open", "11½–13", "11:30 – 13:00", 11 * 60 + 30, 13 * 60],
   ["noon", "13–15", "13:00 – 15:00 (giờ đông)", 13 * 60, 15 * 60],
-  ["evening-open", "16½–18", "16:30 – 18:00 (chuẩn bị 16:30, khách từ 17:00)", 16 * 60 + 30, 18 * 60],
+  ["evening-open", "16–18", "16:00 – 18:00 (ngày thường từ 17:00; thứ 7/CN/lễ từ 16:00)", 16 * 60, 18 * 60],
   ["evening", "18–21", "18:00 – 21:00 (giờ đông)", 18 * 60, 21 * 60],
   ["evening-end", "21–22", "21:00 – đóng cửa 22:00", 21 * 60, 22 * 60],
 ] as const;
@@ -598,3 +609,4 @@ function GroupWindowRow({
     </tr>
   );
 }
+
