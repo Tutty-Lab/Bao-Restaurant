@@ -58,6 +58,8 @@ export type Employee = {
    * diesem Fenster an, unabhängig von den Öffnungsblöcken.
    */
   fixedShift?: DayWindow;
+  /** Earliest allowed start; supports flexible evening-only shifts. */
+  earliestWorkMinutes?: number;
   /**
    * Erster Arbeitstag als ISO-Datum "yyyy-MM-dd" (Eintritt/Vertragsbeginn).
    *
@@ -195,3 +197,4 @@ export type MonthArchive = {
   printedWeeks?: string[];
   underQuotaAccepted?: boolean;
 };
+

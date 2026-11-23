@@ -19,6 +19,9 @@ export function surchargeFree(employee: Employee, isoDate: string, holidays: Set
 
 /** Die Blöcke, in denen DIESE Person arbeiten darf: mit „Không Zuschlag" endet jeder spätestens 20:00. */
 export function personalBlocks(employee: Employee, blocks: DayBlocks): DayBlocks {
+  if (employee.earliestWorkMinutes != null) blocks = blocks
+    .map(block => ({ ...block, startMinutes: Math.max(block.startMinutes, employee.earliestWorkMinutes!) }))
+    .filter(block => block.endMinutes > block.startMinutes);
   if (!employee.noSurcharge) return blocks;
   return blocks
     .map((block) => ({ ...block, endMinutes: Math.min(block.endMinutes, NO_SURCHARGE_END) }))
@@ -38,3 +41,4 @@ export function earliestStartIn(block: { startMinutes: number }): number {
   const early = block.startMinutes < 14 * 60 ? EARLY_LUNCH_START : EARLY_EVENING_START;
   return Math.min(block.startMinutes, early);
 }
+

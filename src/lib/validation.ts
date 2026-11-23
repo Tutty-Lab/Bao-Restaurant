@@ -106,6 +106,9 @@ export function validateSchedule(
     if (employee && !mayWorkOn(employee, shift.date)) errors.push({ employeeId: employee.id, date: shift.date, rule: "days-off",
       message: `${employee.name}: đã xếp vào ngày không thể làm ${shift.date}.`,
     });
+    if (employee?.earliestWorkMinutes != null && shift.startMinutes < employee.earliestWorkMinutes) errors.push({ employeeId: employee.id, date: shift.date, rule: "shift-length",
+      message: `${employee.name}: ca bắt đầu trước khung giờ có thể làm.`,
+    });
     // „Không Zuschlag": kein Sonntag, kein Feiertag, Ende spätestens 20:00.
     if (employee?.noSurcharge && !surchargeFree(employee, shift.date, holidaySet)) errors.push({ employeeId: employee.id, date: shift.date, rule: "days-off",
       message: `${employee.name}: không Zuschlag nhưng có ca Chủ nhật/ngày lễ ${shift.date}.`,
@@ -325,3 +328,4 @@ export function validateSchedule(
   const echteFehler = errors.filter((e) => e.severity !== "warning");
   return { valid: echteFehler.length === 0, errors, summaries };
 }
+

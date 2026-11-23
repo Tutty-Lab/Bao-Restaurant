@@ -588,7 +588,7 @@ function earlyStartTopUp(
         if (!block) continue;
         const paid = shift.paidMinutes + SLOT;
         const start = shift.endMinutes - paid - calculatePause(paid);
-        if (start < earliestStartIn(block)) continue;
+        if (start < Math.max(earliestStartIn(block), employee.earliestWorkMinutes ?? 0)) continue;
         const weekday = effectiveWeekdayKey(shift.date, holidays);
         const grown = makeShift(employee.id, shift.date, start, paid, shift.shiftType === "EARLY" ? "EARLY" : "LATE", weekday, ctx);
         if (sameDay.some((other) => other !== shift && other.startMinutes < grown.endMinutes && grown.startMinutes < other.endMinutes)) continue;
@@ -1016,3 +1016,4 @@ export function generateWeeklySchedule(input: WeeklyInput, existing: Shift[] = [
   return improveCoverage(result, employees, days, holidays, dailyTargets, ctx)
     .sort((a, b) => a.date.localeCompare(b.date) || a.startMinutes - b.startMinutes || a.employeeId.localeCompare(b.employeeId));
 }
+

@@ -150,7 +150,12 @@ export function applyMigrations(storeId: string, schedule: Schedule): Schedule {
       ? { ...e, monthlySalary: 603, hourlyRate: 13.9, targetMinutes: 43 * 60, weeklyHours: undefined }
       : e), migrations: [...done(), "2026-11-bao-minijob-603"] };
   }
+  if (storeId === "bao" && !done().includes("2026-11-bao-flexible-evening")) {
+    next = { ...next, employees: next.employees.map(e => e.id === "bao-tu" && e.fixedShift?.startMinutes === 1020 && e.fixedShift.endMinutes === 1320
+      ? { ...e, fixedShift: undefined, earliestWorkMinutes: 960 } : e), migrations: [...done(), "2026-11-bao-flexible-evening"] };
+  }
   return next;
 }
+
 
 

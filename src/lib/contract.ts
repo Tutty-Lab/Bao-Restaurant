@@ -133,6 +133,7 @@ function weekPartMinutes(weeklyMinutes: number, week: WeekShare): number {
  * Planer die Zahl exakt treffen kann.
  */
 function proratedMonthly(emp: Employee, openDates: readonly string[]): number {
+  if (emp.employmentType === "MINIJOB") return openDates.some(date => isEmployedOn(emp, date)) ? emp.targetMinutes : 0;
   if (emp.startDate == null && emp.endDate == null) return emp.targetMinutes;
   if (openDates.length === 0) return emp.targetMinutes;
   const beschaeftigt = openDates.filter((date) => isEmployedOn(emp, date)).length;
@@ -267,3 +268,4 @@ export function weeklyTargetMinutes(
   openDaysByWeek.forEach((w, i) => result.set(w.weekStart, slots[i] * SCHEDULE_SLOT_MINUTES));
   return result;
 }
+
