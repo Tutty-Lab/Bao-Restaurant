@@ -380,6 +380,15 @@ export function ScheduleTab({
                   </tr>
                 );
               })}
+              <tr className="bg-violet-50 text-violet-800">
+                <td className="sticky left-0 z-10 border-b border-r border-slate-200 bg-violet-50 px-1.5 py-1 font-medium text-[10px]" title="Chủ hỗ trợ theo giờ mở cửa; mỗi lúc một vị trí. Không tính giờ hợp đồng/chấm công.">Chủ tiệm</td>
+                {gridDates.map(d => {
+                  const day = resolveDay(schedule.workHours, d, publicHolidays(schedule.year), Object.fromEntries(schedule.dateOverrides.map(o => [o.date, o])));
+                  return <td key={d} className="border-b border-l border-slate-200 px-0.5 py-1 text-center" title="Dự kiến chủ hỗ trợ, chưa phân vị trí Bếp/Bồi">{day.closed ? "–" : day.blocks.map((b, i) => <div key={i} className="whitespace-nowrap">{shortTime(b.startMinutes)}–{shortTime(b.endMinutes)}</div>)}</td>;
+                })}
+                <td className="border-b border-l border-slate-200 text-center">–</td>
+                <td className="border-b border-l border-slate-200 text-center">–</td>
+              </tr>
             </tbody>
             <tfoot>
               <SummaryRow label="Số nhân viên" dates={gridDates} value={(d) => String(dayStats.get(d)!.people.size)} />
@@ -402,7 +411,7 @@ export function ScheduleTab({
               />
               <SummaryRow label="Ca sáng" dates={gridDates} value={(d) => String(dayStats.get(d)!.early)} />
               <SummaryRow label="Ca tối" dates={gridDates} value={(d) => String(dayStats.get(d)!.late)} />
-              {schedule.shifts.length > 0 && staffingRows.map((rule) => (
+              {staffingRows.map((rule) => (
                 <CoverageRow
                   key={rule.label}
                   label={rule.label}
@@ -412,7 +421,7 @@ export function ScheduleTab({
                   peaks={(d) => peaksByDay.get(d)?.byLabel.get(rule.label)}
                 />
               ))}
-              {schedule.shifts.length > 0 && GROUP_WINDOWS.map((w) => (
+              {GROUP_WINDOWS.map((w) => (
                 <GroupWindowRow
                   key={w.key}
                   label={`${w.group === "KITCHEN" ? "Bếp" : "Bồi"} ${w.range}`}
