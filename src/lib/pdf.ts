@@ -638,6 +638,7 @@ export function deliver(blob: Blob, filename: string): void {
   a.href = url;
   a.download = filename;
   a.rel = "noopener";
+  a.target = "_blank";
   a.style.display = "none";
   document.body.appendChild(a);
   a.click();
@@ -932,3 +933,4 @@ export async function sharePdf(blob: Blob, filename: string): Promise<ShareResul
     return "failed";
   }
 }
+

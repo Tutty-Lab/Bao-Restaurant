@@ -1,3 +1,4 @@
+import { needsPdfSaveStep } from "../lib/pdfBrowser";
 import { useMemo, useState, type ReactNode } from "react";
 import type { UseScheduleReturn } from "../hooks/useSchedule";
 import type { Employee } from "../types";
@@ -136,7 +137,7 @@ export function StundenzettelTab({
    * giữ các file lại, mỗi file một nút Lưu / Chia sẻ.
    */
   const finishPdfs = async (files: { blob: Blob; filename: string }[]) => {
-    if (inApp.inApp) {
+    if (inApp.inApp || needsPdfSaveStep(typeof navigator === "undefined" ? "" : navigator.userAgent)) {
       setReadyPdfs(files);
       return;
     }
@@ -234,7 +235,7 @@ export function StundenzettelTab({
       setShareNote(null);
     } else if (result !== "cancelled") {
       setShareNote(
-        `${inApp.name ?? "Trình duyệt này"} không cho lưu hoặc chia sẻ file. Hãy mở app bằng trình duyệt (Chrome/Safari) rồi xuất lại.`,
+        "Không mở được bảng chia sẻ. Bấm Tải PDF để tải file hoặc mở bản xem riêng; trang lịch vẫn được giữ lại.",
       );
     }
   }
@@ -413,6 +414,7 @@ export function StundenzettelTab({
                 >
                   Lưu / Chia sẻ
                 </button>
+                <button type="button" onClick={() => deliver(file.blob, file.filename)} className="rounded border border-emerald-700 px-4 py-2 text-sm font-semibold text-emerald-800">Tải PDF</button>
                 <span className="text-xs break-all">{file.filename}</span>
               </div>
             ))}
@@ -423,7 +425,7 @@ export function StundenzettelTab({
           {shareNote && (
             <div className="mt-2 rounded border border-amber-300 bg-amber-50 p-2 text-amber-900">
               <div className="text-sm">{shareNote}</div>
-              {openInBrowserHelp}
+              {inApp.inApp && openInBrowserHelp}
             </div>
           )}
         </div>
@@ -512,3 +514,4 @@ export function StundenzettelTab({
     </div>
   );
 }
+

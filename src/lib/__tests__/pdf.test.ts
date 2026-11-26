@@ -77,6 +77,7 @@ describe("deliver", () => {
       expect(blobType).toBe("application/pdf");
       expect(clickedDownload).toBe("Stundenzettel_Tuan.pdf");
       expect(clickedRel).toBe("noopener");
+      expect((mockAnchor as any).target).toBe("_blank");
     } finally {
       (globalThis as any).document = originalDocument;
       URL.createObjectURL = originalCreateObjectURL;
@@ -121,3 +122,4 @@ describe("sharePdf (trình duyệt nhúng Zalo/Messenger)", () => {
     await expect(sharePdf(blob, "a.pdf")).resolves.toBe("failed");
   });
 });
+
