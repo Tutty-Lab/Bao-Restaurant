@@ -28,6 +28,7 @@ const normal = [LUNCH_BLOCK, EVENING_BLOCK];
 export const STORES: StoreConfig[] = [{
   id: "bao", name: "Quán Bảo", shortName: "Bảo", address: "",
   sampleEmployees: baoEmployees,
+  demandProfile: [{ startMinutes: 0, endMinutes: 1440, level: 1, label: "Đồng đều, chưa phân cao điểm" }],
   workHours: {
     perWeekday: { monday: normal, tuesday: normal, wednesday: normal, thursday: normal, friday: normal, saturday: [specialEvening], sunday: [specialEvening] },
     holiday: [specialEvening],
@@ -101,5 +102,6 @@ export function initialScheduleFor(store: StoreConfig): Schedule {
     shifts: [],
   };
 }
+
 
 

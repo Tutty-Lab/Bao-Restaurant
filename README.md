@@ -32,3 +32,6 @@ Local Vite luôn dùng store_id dev-bao. Production mặc định bao. Hai hàng
 
 
 
+
+Quán mới: hệ số tất cả các ngày và tất cả khung giờ đều 1; không phân cao điểm. Khung Bếp/Bồi trong debug chỉ để kiểm tra độ phủ.
+

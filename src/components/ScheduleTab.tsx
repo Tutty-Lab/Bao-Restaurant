@@ -556,9 +556,9 @@ function CoverageRow({
 // Khung debug Bảo; chỉ tính phần giao với giờ mở cửa thực tế.
 const GROUP_RANGES = [
   ["noon-open", "11½–13", "11:30 – 13:00", 11 * 60 + 30, 13 * 60],
-  ["noon", "13–15", "13:00 – 15:00 (giờ đông)", 13 * 60, 15 * 60],
+  ["noon", "13–15", "13:00 – 15:00", 13 * 60, 15 * 60],
   ["evening-open", "16–18", "16:00 – 18:00 (ngày thường từ 17:00; thứ 7/CN/lễ từ 16:00)", 16 * 60, 18 * 60],
-  ["evening", "18–21", "18:00 – 21:00 (giờ đông)", 18 * 60, 21 * 60],
+  ["evening", "18–21", "18:00 – 21:00", 18 * 60, 21 * 60],
   ["evening-end", "21–22", "21:00 – đóng cửa 22:00", 21 * 60, 22 * 60],
 ] as const;
 const GROUP_WINDOWS = (["KITCHEN", "SERVICE"] as const).flatMap((group) =>
@@ -601,3 +601,4 @@ function GroupWindowRow({
     </tr>
   );
 }
+
