@@ -35,3 +35,6 @@ Local Vite luôn dùng store_id dev-bao. Production mặc định bao. Hai hàng
 
 Quán mới: hệ số tất cả các ngày và tất cả khung giờ đều 1; không phân cao điểm. Khung Bếp/Bồi trong debug chỉ để kiểm tra độ phủ.
 
+
+Khi thêm nhân viên/đổi giờ mở cửa: tạo lại lịch để áp dụng. Bảo ưu tiên theo ngày có thể làm, không theo nhóm hợp đồng; không tự xếp trước giờ mở để bù thiếu. Thiếu sức chứa vẫn hiện cảnh báo, không tự đổi hợp đồng. Kiểm thử futureConfiguration.test.ts bao gồm thêm người, đổi giờ, ngày đóng/ngoại lệ và đổi thứ tự danh sách.
+

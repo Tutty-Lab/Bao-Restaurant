@@ -883,9 +883,14 @@ export function generateWeeklySchedule(input: WeeklyInput, existing: Shift[] = [
   }
   const weekInfo = [...byWeek].map(([weekStart, weekDates]) => ({ weekStart, openDays: weekDates.length }));
   const weeks = [...byWeek].sort((a, b) => b[1].length - a[1].length || a[0].localeCompare(b[0]));
-  const typeRank = (employee: Employee) => employee.employmentType === "VOLLZEIT" ? 0 : employee.employmentType === "TEILZEIT" ? 1 : 2;
+  // Schedule scarce availability first, regardless of employment type or station.
+  const eligibleCounts = new Map(input.employees.map(employee => [employee.id, openDates.filter(date =>
+    mayWorkOn(employee, date) && surchargeFree(employee, date, holidays) && !ctx.blocked.get(employee.id)?.has(date)
+  ).length]));
+  const legacyRank = (e: Employee) => e.employmentType === "VOLLZEIT" ? 0 : e.employmentType === "TEILZEIT" ? 1 : 2;
   const employees = [...input.employees].sort((a, b) =>
-    Number(Boolean(b.fixedShift)) - Number(Boolean(a.fixedShift)) || typeRank(a) - typeRank(b) || a.id.localeCompare(b.id),
+    Number(Boolean(b.fixedShift)) - Number(Boolean(a.fixedShift)) ||
+    (input.storeTag === "bao" ? eligibleCounts.get(a.id)! - eligibleCounts.get(b.id)! : legacyRank(a) - legacyRank(b)) || a.id.localeCompare(b.id),
   );
   let result = [...existing];
   const monthDates = [...days.keys()];
@@ -1010,10 +1015,10 @@ export function generateWeeklySchedule(input: WeeklyInput, existing: Shift[] = [
   result = topUpShortfalls(result, employees, days, holidays, dailyTargets, monthlyTargets, weeklyCaps, ctx);
   // Wochenverträge bleiben an ihrer Woche – nur Monatsverträge dürfen den Tag tauschen.
   result = fillGroupGaps(result, employees.filter((employee) => employee.weeklyHours == null), days, holidays, dailyTargets, ctx);
-  result = earlyStartTopUp(result, employees, days, holidays, dailyTargets, monthlyTargets, ctx);
+  // Bao: changed opening hours are hard bounds; never invent preparation time.
+  if (input.storeTag !== "bao") result = earlyStartTopUp(result, employees, days, holidays, dailyTargets, monthlyTargets, ctx);
   result = extendLongDays(result, employees, days, holidays, dailyTargets, monthlyTargets, ctx);
 
   return improveCoverage(result, employees, days, holidays, dailyTargets, ctx)
     .sort((a, b) => a.date.localeCompare(b.date) || a.startMinutes - b.startMinutes || a.employeeId.localeCompare(b.employeeId));
 }
-

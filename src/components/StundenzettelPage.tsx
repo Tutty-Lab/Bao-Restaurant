@@ -230,9 +230,9 @@ export function StundenzettelPage({
       </div>
 
       <div className="mt-10 grid grid-cols-3 gap-8 text-[11px]">
-        <Signature label="Unterschrift Mitarbeiter" />
-        <Signature label="Unterschrift Arbeitgeber" />
-        <Signature label="Datum" />
+        <Signature />
+        <Signature />
+        <Signature />
       </div>
     </div>
   );
@@ -346,10 +346,10 @@ function Td({
   );
 }
 
-function Signature({ label }: { label: string }) {
+function Signature() {
   return (
     <div>
-      <div className="border-t border-slate-500 pt-1 mt-8 text-slate-600">{label}</div>
+      <div className="border-t border-slate-500 pt-1 mt-8 text-slate-600" />
     </div>
   );
 }
